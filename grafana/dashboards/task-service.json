@@ -1,0 +1,79 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "grafana" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "iteration": 1710000000000,
+  "links": [],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Tasks Running",
+      "id": 1,
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "options": {
+        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "orientation": "auto",
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "PROMETHEUS_DS" },
+          "expr": "tasks_running",
+          "legendFormat": "running"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Tasks Executed (rate by task/status)",
+      "id": 2,
+      "gridPos": { "h": 8, "w": 12, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "PROMETHEUS_DS" },
+          "expr": "sum by (task_name, status) (rate(tasks_executed_total[5m]))",
+          "legendFormat": "{{task_name}} {{status}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] }
+    },
+    {
+      "type": "timeseries",
+      "title": "Avg Task Duration (s) by task",
+      "id": 3,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "PROMETHEUS_DS" },
+          "expr": "sum by (task_name) (rate(task_duration_seconds_sum[5m])) / sum by (task_name) (rate(task_duration_seconds_count[5m]))",
+          "legendFormat": "{{task_name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["task-service"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Task Service",
+  "uid": "task-service",
+  "version": 1
+}
